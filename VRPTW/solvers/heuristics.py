@@ -32,6 +32,15 @@ def cross(a, b, i, j):
     return a[:i] + b[j:], b[:j] + a[i:]
 
 
+def insertion(a, b, i, j):
+    # print(a, b, i, j)
+    if len(a) == 0:
+        return a, b
+    while i >= len(a):
+        i -= len(a)
+    return a[:i] + a[i + 1:], b[:j] + [a[i]] + b[j:]
+
+
 class LocalSearch:
     def __init__(self, problem: Problem):
         self.problem: Problem = problem
@@ -65,14 +74,15 @@ class IteratedLocalSearch(LocalSearch):
             # Для всех возможных пар маршрутов
             for i, j in itertools.combinations(range(len(best)), 2):
                 # Для всех возможных индексов в двух маршрутах
-                for k, l in itertools.product(range(len(best[i].customers)), range(len(best[j].customers))):
-                    c1, c2 = cross(best[i].customers, best[j].customers, k, l)
-                    r1, r2 = Route(self.problem, c1), Route(self.problem, c2)
-                    if r1.is_feasible and r2.is_feasible:
-                        if r1.total_distance + r2.total_distance < best[i].total_distance + best[j].total_distance:
-                            best[i] = r1
-                            best[j] = r2
-                            is_stucked = False
+                for k, l in itertools.product(range(len(best[i].customers) + 1), range(len(best[j].customers) + 1)):
+                    for func in [cross, insertion]:
+                        c1, c2 = func(best[i].customers, best[j].customers, k, l)
+                        r1, r2 = Route(self.problem, c1), Route(self.problem, c2)
+                        if r1.is_feasible and r2.is_feasible:
+                            if r1.total_distance + r2.total_distance < best[i].total_distance + best[j].total_distance:
+                                best[i] = r1
+                                best[j] = r2
+                                is_stucked = False
         return best
 
     def execute(self):
