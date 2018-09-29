@@ -15,3 +15,5 @@ if __name__ == '__main__':
     assert os.path.exists(args.problem_file), "Problem file doesn't exist"
     problem = SolomonFormatParser(args.problem_file).get_problem()
     solution = IteratedLocalSearch(problem).execute()
+    print(problem.print_canonical(solution))
+    print("Total distance:", problem.obj_func(solution))

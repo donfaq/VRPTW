@@ -2,6 +2,10 @@ from VRPTW.structure import Problem, Customer
 
 
 class SolomonFormatParser:
+    """Parsing file in Solomon format
+    https://www.sintef.no/projectweb/top/vrptw/solomon-benchmark/documentation/
+    """
+
     def __init__(self, problem_file):
         self.problem_file = problem_file
 
@@ -14,4 +18,3 @@ class SolomonFormatParser:
         for line in lines[9:]:
             customers.append(Customer(*list(map(int, line))))
         return Problem(name, customers, vehicle_number, vehicle_capacity)
-

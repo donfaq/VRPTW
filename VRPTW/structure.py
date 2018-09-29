@@ -33,9 +33,15 @@ class Problem:
                f"Vehicle number: {self.vehicle_number}\n" \
                f"Vehicle capacity: {self.vehicle_capacity}\n"
 
+    def obj_func(self, routes):
+        return sum(map(lambda x: x.total_distance, routes))
+
+    def print_canonical(self, routes):
+        return "\n".join(list(map(lambda x: x.canonical_view, routes)))
+
 
 class Route:
-    def __init__(self,  problem: Problem, customers: list):
+    def __init__(self, problem: Problem, customers: list):
         self.problem: Problem = problem
         self._customers: list = [self.problem.depot, *customers, self.problem.depot]
 
