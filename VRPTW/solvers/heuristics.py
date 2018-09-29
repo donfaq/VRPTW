@@ -35,15 +35,16 @@ class LocalSearch:
     def optimize(self, solution: list) -> list:
         new_solution = list(solution)
         for i in range(len(new_solution)):
-            route = new_solution[i]
-            has_stacked = False
-            while not has_stacked:
-                has_stacked = True
+            is_stucked = False
+            while not is_stucked:
+                route = new_solution[i]
+                is_stucked = True
                 for k, j in itertools.combinations(range(len(route.customers) - 1), 2):
                     new_route = Route(self.problem, two_opt(route.customers, k, j))
                     if new_route.is_feasible:
                         if new_route.total_distance < route.total_distance:
                             new_solution[i] = new_route
+                            is_stucked = False
         return new_solution
 
 
@@ -54,6 +55,5 @@ class IteratedLocalSearch(LocalSearch):
 
     def execute(self):
         best = self.optimize(self.initial_solution)
-        print(list(filter(lambda x: not x.is_serviced, self.problem.customers)))
-        print(sum(map(lambda x: x.total_distance, best)))
         print('\n'.join(r.canonical_view for r in best))
+        print("Total distance", sum(map(lambda x: x.total_distance, best)))
