@@ -103,9 +103,9 @@ class IteratedLocalSearch(LocalSearch):
 
     def execute(self):
         best = self.optimize(self.initial_solution)
-        print("Local search solution:")
-        print(self.problem.print_canonical(best))
-        print("Total distance", self.obj_func(best))
+        # print("Local search solution:")
+        # print(self.problem.print_canonical(best))
+        # print("Total distance", self.obj_func(best))
 
         is_stucked = False
         while not is_stucked:
@@ -115,9 +115,9 @@ class IteratedLocalSearch(LocalSearch):
             if self.obj_func(new_solution) < self.obj_func(best):
                 is_stucked = False
                 best = list(filter(lambda x: len(x.customers) != 0, new_solution))
-                print("ILS step")
-                print(self.problem.print_canonical(best))
-                print("Total distance", self.obj_func(best))
+                # print("ILS step")
+                # print(self.problem.print_canonical(best))
+                # print("Total distance", self.obj_func(best))
         return best
 
 
