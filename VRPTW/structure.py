@@ -78,4 +78,4 @@ class Route:
         for source, target in zip(self._customers, self._customers[1:]):
             time = max([target.ready_time, time + source.distance(target)]) + target.service_time
             capacity -= target.demand
-        return time <= self.problem.depot.due_date and capacity >= 0
+        return time < self.problem.depot.due_date and capacity >= 0
