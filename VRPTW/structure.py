@@ -68,6 +68,10 @@ class Route:
         return sum(a.distance(b) for (a, b) in zip(self._customers, self._customers[1:]))
 
     @property
+    def edges(self):
+        return list(zip(self._customers, self._customers[1:]))
+
+    @property
     def is_feasible(self):
         time = 0
         capacity = self.problem.vehicle_capacity

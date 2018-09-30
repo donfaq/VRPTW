@@ -1,5 +1,5 @@
 from VRPTW.parser import SolomonFormatParser
 from VRPTW.structure import Customer,  Problem
-from VRPTW.solvers.heuristics import IteratedLocalSearch
+from VRPTW.solvers.heuristics import IteratedLocalSearch, GuidedLocalSearch
 
-__all__ = ["SolomonFormatParser", "Customer", "Problem", "IteratedLocalSearch"]
+__all__ = ["SolomonFormatParser", "Customer", "Problem", "IteratedLocalSearch", "GuidedLocalSearch"]

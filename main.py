@@ -16,5 +16,4 @@ if __name__ == '__main__':
     problem = SolomonFormatParser(args.problem_file).get_problem()
     print(problem)
     solution = IteratedLocalSearch(problem).execute()
-    print(problem.print_canonical(solution))
-    print("Total distance:", problem.obj_func(solution))
+    # solution = GuidedLocalSearch(problem).execute()
