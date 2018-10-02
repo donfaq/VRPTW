@@ -14,10 +14,10 @@ def arguments() -> argparse.Namespace:
 
 if __name__ == '__main__':
     args = arguments()
+    if not os.path.exists('solutions'):
+        os.mkdir('solutions')
     if args.benchmark:
         for file in glob.glob('instances/*.txt'):
-            if not os.path.exists('solutions'):
-                os.mkdir('solutions')
             problem = SolomonFormatParser(file).get_problem()
             solution = IteratedLocalSearch(problem).execute()
             with open(f"""solutions/{file.split(os.sep)[1].split(".")[0]}.sol""", 'w') as f:
@@ -28,4 +28,6 @@ if __name__ == '__main__':
         problem = SolomonFormatParser(args.problem_file).get_problem()
         print(problem)
         solution = IteratedLocalSearch(problem).execute()
+        with open(f"""solutions/{args.problem_file.split(os.sep)[-1].split(".")[0]}.sol""", 'w') as f:
+            f.write(problem.print_canonical(solution))
         # solution = GuidedLocalSearch(problem).execute()

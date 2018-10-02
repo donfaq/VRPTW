@@ -10,8 +10,7 @@ class DummyHeuristic:
         """Solution sampled from customer list, sorted by demand"""
 
         def get_available_customers():
-            return sorted(filter(lambda x: not x.is_serviced, self.problem.customers),
-                          key=lambda x: x.demand)
+            return sorted(filter(lambda x: not x.is_serviced, self.problem.customers), key=lambda x: x.due_date)
 
         solution = []
         while len(get_available_customers()) > 0:
@@ -90,7 +89,7 @@ class IteratedLocalSearch(LocalSearch):
             for i, j in itertools.combinations(range(len(best)), 2):
                 # Для всех возможных индексов в двух маршрутах
                 for k, l in itertools.product(range(len(best[i].customers) + 2), range(len(best[j].customers) + 2)):
-                    for func in [cross, insertion]:
+                    for func in [cross, insertion, swap]:
                         c1, c2 = func(best[i].customers, best[j].customers, k, l)
                         r1, r2 = Route(self.problem, c1), Route(self.problem, c2)
                         if r1.is_feasible and r2.is_feasible:
@@ -103,9 +102,9 @@ class IteratedLocalSearch(LocalSearch):
 
     def execute(self):
         best = self.optimize(self.initial_solution)
-        # print("Local search solution:")
-        # print(self.problem.print_canonical(best))
-        # print("Total distance", self.obj_func(best))
+        print("Local search solution:")
+        print(self.problem.print_canonical(best))
+        print("Total distance", self.obj_func(best))
 
         is_stucked = False
         while not is_stucked:
@@ -115,9 +114,9 @@ class IteratedLocalSearch(LocalSearch):
             if self.obj_func(new_solution) < self.obj_func(best):
                 is_stucked = False
                 best = list(filter(lambda x: len(x.customers) != 0, new_solution))
-                # print("ILS step")
-                # print(self.problem.print_canonical(best))
-                # print("Total distance", self.obj_func(best))
+                print("ILS step")
+                print(self.problem.print_canonical(best))
+                print("Total distance", self.obj_func(best))
         return best
 
 

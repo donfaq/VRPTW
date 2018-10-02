@@ -75,7 +75,13 @@ class Route:
     def is_feasible(self):
         time = 0
         capacity = self.problem.vehicle_capacity
+        is_feasible = True
         for source, target in zip(self._customers, self._customers[1:]):
-            time = max([target.ready_time, time + source.distance(target)]) + target.service_time
+            start_service_time = max([target.ready_time, time + source.distance(target)])
+            if start_service_time >= target.due_date:
+                is_feasible = False
+            time = start_service_time + target.service_time
             capacity -= target.demand
-        return time < self.problem.depot.due_date and capacity >= 0
+        if time >= self.problem.depot.due_date or capacity < 0:
+            is_feasible = False
+        return is_feasible
