@@ -66,14 +66,10 @@ class Route:
     @property
     def total_distance(self):
         time = 0
-        result = [0, 0.0]
         for source, target in zip(self._customers, self._customers[1:]):
             start_time = max([target.ready_time, time + source.distance(target)])
             time = start_time + target.service_time
-            result.append(target.number)
-            result.append(start_time)
         return time
-#         return sum(a.distance(b) for (a, b) in zip(self._customers, self._customers[1:]))
 
     @property
     def edges(self):
