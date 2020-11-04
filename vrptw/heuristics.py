@@ -35,7 +35,6 @@ def cross(a, b, i, j):
 
 
 def insertion(a, b, i, j):
-    # print(a, b, i, j)
     if len(a) == 0:
         return a, b
     while i >= len(a):
@@ -44,7 +43,6 @@ def insertion(a, b, i, j):
 
 
 def swap(a, b, i, j):
-    # print(a, b, i, j)
     if i >= len(a) or j >= len(b):
         return a, b
     a, b = a.copy(), b.copy()
@@ -85,9 +83,9 @@ class IteratedLocalSearch(LocalSearch):
         is_stucked = False
         while not is_stucked:
             is_stucked = True
-            # Для всех возможных пар маршрутов
+            # For every pair possible of routes
             for i, j in itertools.combinations(range(len(best)), 2):
-                # Для всех возможных индексов в двух маршрутах
+                # For every possible pair of indices in routes
                 for k, l in itertools.product(range(len(best[i].customers) + 2), range(len(best[j].customers) + 2)):
                     for func in [cross, insertion, swap]:
                         c1, c2 = func(best[i].customers, best[j].customers, k, l)
@@ -120,6 +118,7 @@ class IteratedLocalSearch(LocalSearch):
         return best
 
 
+# TODO: Rewrite
 class GuidedLocalSearch(IteratedLocalSearch):
     def __init__(self, problem: Problem, l=0.5):
         super().__init__(problem, self.augmented_obj_func)
