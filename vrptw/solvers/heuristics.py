@@ -1,4 +1,4 @@
-from VRPTW.structure import Problem, Route
+from vrptw.structure import Problem, Route
 import itertools
 
 
@@ -27,7 +27,7 @@ class DummyHeuristic:
 def two_opt(a, i, j):
     if i == 0:
         return a[j:i:-1] + [a[i]] + a[j + 1:]
-    return a[:i] + a[j:i - 1:-1] + a[j + 1:]
+    return a[:i] + a[j: i - 1: -1] + a[j + 1:]
 
 
 def cross(a, b, i, j):
@@ -129,8 +129,7 @@ class GuidedLocalSearch(IteratedLocalSearch):
 
     @staticmethod
     def numeric_edges(routes):
-        return [edge for route in routes
-                for edge in list(map(lambda x: (x[0].number, x[1].number), route.edges))]
+        return [edge for route in routes for edge in list(map(lambda x: (x[0].number, x[1].number), route.edges))]
 
     def augmented_obj_func(self, routes):
         g = self.problem.obj_func(routes)
@@ -142,8 +141,7 @@ class GuidedLocalSearch(IteratedLocalSearch):
     def update_penalties(self, routes):
         util = [[0 for _ in self.problem.customers] for _ in self.problem.customers]
         for e in [e for route in map(lambda x: x.edges, routes) for e in route]:
-            util[e[0].number][e[1].number] = \
-                (e[0].distance(e[1]) / (1 + self.penalties[e[0].number][e[1].number]))
+            util[e[0].number][e[1].number] = e[0].distance(e[1]) / (1 + self.penalties[e[0].number][e[1].number])
         max_util_value = max(max(x) for x in util)
         for i, _ in enumerate(util):
             for j, _ in enumerate(util[i]):
