@@ -29,9 +29,11 @@ class Problem:
         self.depot.is_serviced = True
 
     def __repr__(self):
-        return f"Instance: {self.name}\n" \
-               f"Vehicle number: {self.vehicle_number}\n" \
-               f"Vehicle capacity: {self.vehicle_capacity}\n"
+        return (
+            f"Instance: {self.name}\n"
+            f"Vehicle number: {self.vehicle_number}\n"
+            f"Vehicle capacity: {self.vehicle_capacity}\n"
+        )
 
     def obj_func(self, routes):
         return sum(map(lambda x: x.total_distance, routes))

@@ -1,4 +1,4 @@
-from VRPTW.structure import Problem, Route
+from vrptw.structure import Problem, Route
 import itertools
 
 
@@ -27,7 +27,7 @@ class DummyHeuristic:
 def two_opt(a, i, j):
     if i == 0:
         return a[j:i:-1] + [a[i]] + a[j + 1:]
-    return a[:i] + a[j:i - 1:-1] + a[j + 1:]
+    return a[:i] + a[j: i - 1: -1] + a[j + 1:]
 
 
 def cross(a, b, i, j):
@@ -35,7 +35,6 @@ def cross(a, b, i, j):
 
 
 def insertion(a, b, i, j):
-    # print(a, b, i, j)
     if len(a) == 0:
         return a, b
     while i >= len(a):
@@ -44,7 +43,6 @@ def insertion(a, b, i, j):
 
 
 def swap(a, b, i, j):
-    # print(a, b, i, j)
     if i >= len(a) or j >= len(b):
         return a, b
     a, b = a.copy(), b.copy()
@@ -85,9 +83,9 @@ class IteratedLocalSearch(LocalSearch):
         is_stucked = False
         while not is_stucked:
             is_stucked = True
-            # Для всех возможных пар маршрутов
+            # For every pair possible of routes
             for i, j in itertools.combinations(range(len(best)), 2):
-                # Для всех возможных индексов в двух маршрутах
+                # For every possible pair of indices in routes
                 for k, l in itertools.product(range(len(best[i].customers) + 2), range(len(best[j].customers) + 2)):
                     for func in [cross, insertion, swap]:
                         c1, c2 = func(best[i].customers, best[j].customers, k, l)
@@ -120,6 +118,7 @@ class IteratedLocalSearch(LocalSearch):
         return best
 
 
+# TODO: Rewrite
 class GuidedLocalSearch(IteratedLocalSearch):
     def __init__(self, problem: Problem, l=0.5):
         super().__init__(problem, self.augmented_obj_func)
@@ -129,8 +128,7 @@ class GuidedLocalSearch(IteratedLocalSearch):
 
     @staticmethod
     def numeric_edges(routes):
-        return [edge for route in routes
-                for edge in list(map(lambda x: (x[0].number, x[1].number), route.edges))]
+        return [edge for route in routes for edge in list(map(lambda x: (x[0].number, x[1].number), route.edges))]
 
     def augmented_obj_func(self, routes):
         g = self.problem.obj_func(routes)
@@ -142,8 +140,7 @@ class GuidedLocalSearch(IteratedLocalSearch):
     def update_penalties(self, routes):
         util = [[0 for _ in self.problem.customers] for _ in self.problem.customers]
         for e in [e for route in map(lambda x: x.edges, routes) for e in route]:
-            util[e[0].number][e[1].number] = \
-                (e[0].distance(e[1]) / (1 + self.penalties[e[0].number][e[1].number]))
+            util[e[0].number][e[1].number] = e[0].distance(e[1]) / (1 + self.penalties[e[0].number][e[1].number])
         max_util_value = max(max(x) for x in util)
         for i, _ in enumerate(util):
             for j, _ in enumerate(util[i]):
