@@ -1,5 +1,8 @@
-from VRPTW.structure import Problem, Route
+from ..structure import Problem, Route
 import itertools
+import logging
+
+logger = logging.getLogger()
 
 
 class DummyHeuristic:
@@ -10,7 +13,10 @@ class DummyHeuristic:
         """Solution sampled from customer list, sorted by demand"""
 
         def get_available_customers():
-            return sorted(filter(lambda x: not x.is_serviced, self.problem.customers), key=lambda x: x.due_date)
+            return sorted(
+                filter(lambda x: not x.is_serviced, self.problem.customers),
+                key=lambda x: x.due_date,
+            )
 
         solution = []
         while len(get_available_customers()) > 0:
@@ -26,8 +32,8 @@ class DummyHeuristic:
 
 def two_opt(a, i, j):
     if i == 0:
-        return a[j:i:-1] + [a[i]] + a[j + 1:]
-    return a[:i] + a[j:i - 1:-1] + a[j + 1:]
+        return a[j:i:-1] + [a[i]] + a[j + 1 :]
+    return a[:i] + a[j : i - 1 : -1] + a[j + 1 :]
 
 
 def cross(a, b, i, j):
@@ -40,7 +46,7 @@ def insertion(a, b, i, j):
         return a, b
     while i >= len(a):
         i -= len(a)
-    return a[:i] + a[i + 1:], b[:j] + [a[i]] + b[j:]
+    return a[:i] + a[i + 1 :], b[:j] + [a[i]] + b[j:]
 
 
 def swap(a, b, i, j):
@@ -118,46 +124,3 @@ class IteratedLocalSearch(LocalSearch):
                 print(self.problem.print_canonical(best))
                 print("Total distance", self.obj_func(best))
         return best
-
-
-class GuidedLocalSearch(IteratedLocalSearch):
-    def __init__(self, problem: Problem, l=0.5):
-        super().__init__(problem, self.augmented_obj_func)
-        self.l = l
-        self.initial_solution = DummyHeuristic(problem).get_solution()
-        self.penalties = [[0 for _ in self.problem.customers] for _ in self.problem.customers]
-
-    @staticmethod
-    def numeric_edges(routes):
-        return [edge for route in routes
-                for edge in list(map(lambda x: (x[0].number, x[1].number), route.edges))]
-
-    def augmented_obj_func(self, routes):
-        g = self.problem.obj_func(routes)
-        penalty_sum = 0
-        for edge in self.numeric_edges(routes):
-            penalty_sum = self.penalties[edge[0]][edge[1]]
-        return g + self.l * penalty_sum
-
-    def update_penalties(self, routes):
-        util = [[0 for _ in self.problem.customers] for _ in self.problem.customers]
-        for e in [e for route in map(lambda x: x.edges, routes) for e in route]:
-            util[e[0].number][e[1].number] = \
-                (e[0].distance(e[1]) / (1 + self.penalties[e[0].number][e[1].number]))
-        max_util_value = max(max(x) for x in util)
-        for i, _ in enumerate(util):
-            for j, _ in enumerate(util[i]):
-                if util[i][j] == max_util_value:
-                    self.penalties[i][j] = self.penalties[i][j] + 1
-
-    def execute(self):
-        best = self.optimize(self.initial_solution)
-        solutions = []
-        k = 0
-        while k < 20:
-            is_stucked = True
-            local_min = self.execute()
-            self.update_penalties(local_min)
-            solutions.append(local_min)
-            k += 1
-        return min(solutions, key=lambda x: self.problem.obj_func(x))
