@@ -1,5 +1,5 @@
 import os
-import glob
+import pathlib
 import argparse
 import logging
 
@@ -15,28 +15,22 @@ logger = logging.getLogger(__name__)
 
 
 def arguments() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description='Solving VRPTW with heuristics')
-    parser.add_argument('problem_file', type=str, help='Problem file (in Solomon format)')
-    parser.add_argument('--benchmark', type=bool, default=False, help="Run solvers on all files in instances folder")
+    parser = argparse.ArgumentParser(description='Solving VRPTW with ILS')
+    parser.add_argument('problem', type=str, help="Path to the problem file (in Solomon format)")
+    parser.add_argument('--out', type=str, default="solution.txt", help="Output file path. Defauts to './solution.txt'")
     return parser.parse_args()
 
 
 if __name__ == '__main__':
     args = arguments()
-    if not os.path.exists('solutions'):
-        os.mkdir('solutions')
-    if args.benchmark:
-        for file in glob.glob('instances/*.txt'):
-            problem = SolomonFormatParser(file).get_problem()
-            solution = IteratedLocalSearch(problem).execute()
-            with open(f"""solutions/{file.split(os.sep)[1].split(".")[0]}.sol""", 'w') as f:
-                logger.info(file.split(os.sep)[1].split(".")[0], problem.obj_func(solution))
-                f.write(problem.print_canonical(solution))
-    else:
-        assert os.path.exists(args.problem_file), "Problem file doesn't exist"
-        problem = SolomonFormatParser(args.problem_file).get_problem()
-        logger.info(problem)
-        solution = IteratedLocalSearch(problem).execute()
 
-        with open(f"""solutions/{args.problem_file.split(os.sep)[-1].split(".")[0]}.sol""", 'w') as f:
-            f.write(problem.print_canonical(solution))
+    problem_file_path = pathlib.Path(args.problem).resolve()
+    output_file_path = pathlib.Path(args.out).resolve()
+
+    assert os.path.exists(problem_file_path.exists()), "Problem file doesn't exist"
+    
+    problem = SolomonFormatParser().get_problem(problem_file_path)
+    solution = IteratedLocalSearch(problem).execute()
+
+    with open(output_file_path, 'w') as f:
+        f.write(problem.print_canonical(solution))
