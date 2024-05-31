@@ -1,7 +1,7 @@
 import argparse
 import os
 
-from VRPTW import *
+from vrptw import *
 
 
 def arguments() -> argparse.Namespace:

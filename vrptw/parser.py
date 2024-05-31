@@ -1,4 +1,4 @@
-from VRPTW.structure import Problem, Customer
+from .structure import Problem, Customer
 
 
 class SolomonFormatParser:
@@ -10,8 +10,8 @@ class SolomonFormatParser:
         self.problem_file = problem_file
 
     def get_problem(self) -> Problem:
-        with open(self.problem_file, 'r') as f:
-            lines = list(map(lambda l: l.replace('\n', '').split(), f.readlines()))
+        with open(self.problem_file, "r") as f:
+            lines = list(map(lambda l: l.replace("\n", "").split(), f.readlines()))
         name = lines[0][0]
         vehicle_number, vehicle_capacity = list(map(int, lines[4]))
         customers = []
