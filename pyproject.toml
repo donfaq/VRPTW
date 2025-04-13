@@ -1,0 +1,17 @@
+[project]
+name = "vrptw"
+version = "0.1.0"
+description = "Metaheuristics algorithms for solving VRPTW"
+readme = "README.md"
+authors = [
+    { name = "donfaq", email = "zhigalov8@gmail.com" }
+]
+requires-python = ">=3.13"
+dependencies = []
+
+[project.scripts]
+vrptw = "vrptw:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

@@ -1,10 +1,8 @@
-import os
 import pathlib
 import argparse
 import logging
 
-from . import SolomonFormatParser, IteratedLocalSearch
-
+from .solver import VRPTWSolver
 
 logging.basicConfig(
     format='%(asctime)s,%(msecs)03d %(levelname)-8s [%(pathname)s:%(lineno)d] %(message)s',
@@ -21,16 +19,16 @@ def arguments() -> argparse.Namespace:
     return parser.parse_args()
 
 
-if __name__ == '__main__':
+def main():
     args = arguments()
 
     problem_file_path = pathlib.Path(args.problem).resolve()
     output_file_path = pathlib.Path(args.out).resolve()
 
-    assert os.path.exists(problem_file_path.exists()), "Problem file doesn't exist"
-    
-    problem = SolomonFormatParser().get_problem(problem_file_path)
-    solution = IteratedLocalSearch(problem).execute()
+    solver = VRPTWSolver(problem_file_path)
+    solver.solve()
+    solver.save_solution(output_file_path)
 
-    with open(output_file_path, 'w') as f:
-        f.write(problem.print_canonical(solution))
+
+if __name__ == "__main__":
+    main()

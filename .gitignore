@@ -1,7 +1,10 @@
 .venv
 .idea
+.ruff_cache
+*.png
 *__pycache__
 .pytest_cache
 .vscode
 solutions
 solution.txt
+dist
