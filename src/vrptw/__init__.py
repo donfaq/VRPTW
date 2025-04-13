@@ -3,7 +3,8 @@ import pathlib
 import argparse
 import logging
 
-from . import SolomonFormatParser, IteratedLocalSearch
+from .parser import SolomonFormatParser
+from .heuristics import IteratedLocalSearch
 
 
 logging.basicConfig(
@@ -21,7 +22,7 @@ def arguments() -> argparse.Namespace:
     return parser.parse_args()
 
 
-if __name__ == '__main__':
+def main():
     args = arguments()
 
     problem_file_path = pathlib.Path(args.problem).resolve()

@@ -1,6 +1,7 @@
-from ..structure import Problem, Route
 import itertools
 import logging
+
+from .structure import Problem, Route
 
 logger = logging.getLogger()
 

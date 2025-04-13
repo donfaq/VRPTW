@@ -1,7 +1,8 @@
 import argparse
 import os
 
-from vrptw import Problem, SolomonFormatParser
+from .structure import Problem
+from .parser import SolomonFormatParser
 
 
 def arguments() -> argparse.Namespace:
